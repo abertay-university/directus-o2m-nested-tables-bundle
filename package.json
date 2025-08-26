@@ -1,0 +1,62 @@
+{
+	"name": "directus-bundle-o2m-table",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "Visualise content from a o2m relation as a table with the ability to create, edit, delete and rearrange data",
+	"author": {
+		"name": "Tim Butterfield",
+		"email": "tim.butterfield@me.com",
+		"url": "https://www.npmjs.com/~timio23"
+	},
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-interface"
+	],
+	"icon": "extension",
+	"files": [
+		"dist"
+	],
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "interface",
+				"name": "directus-interface-o2m-nested-table",
+				"source": "src/o2m-nested-table/index.ts"
+			},
+			{
+				"type": "interface",
+				"name": "directus-interface-o2m-table",
+				"source": "src/o2m-table/index.ts"
+			}
+		],
+		"host": "^11.1.2"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"validate": "directus-extension validate"
+	},
+	"devDependencies": {
+		"@directus/extensions": "^3.0.7",
+		"@directus/extensions-sdk": "14.0.0",
+		"@directus/format-title": "^12.0.1",
+		"@directus/system-data": "^3.1.1",
+		"@directus/types": "^13.2.0",
+		"@directus/utils": "^13.0.7",
+		"@types/lodash-es": "^4.17.12",
+		"lodash-es": "^4.17.21",
+		"micromustache": "^8.0.3",
+		"typescript": "^5.8.3",
+		"vue": "^3.5.18",
+		"vue-i18n": "^11.1.11",
+		"vuedraggable": "^4.1.0"
+	}
+}
