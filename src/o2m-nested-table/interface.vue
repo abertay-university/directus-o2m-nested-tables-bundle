@@ -375,8 +375,11 @@ function getLinkForItem(item: DisplayItem) {
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ t('no_singleton_relations') }}
 	</v-notice>
+	<v-notice v-else-if="props.primaryKey == '+'">
+        Save changes before creating new records.
+    </v-notice>
 	<div v-else class="one-to-many">
-		<div class="actions">
+		<div class="actions" v-if="props.primaryKey != '+'">
 			<v-button
 				v-if="!disabled && enableSelect && updateAllowed"
 				v-tooltip.bottom="t('add_existing')"
