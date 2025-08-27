@@ -155,7 +155,7 @@ const tabs = computed<string[]>(() => {
 			}
 		});
 	}
-	return tabs;
+	return tabs.sort();
 });
 
 const emptyColumns = computed<Record<string|number,any> | null>(() => {
