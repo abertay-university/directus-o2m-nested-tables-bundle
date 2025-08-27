@@ -193,7 +193,7 @@ const emptyColumns = computed<Record<string|number,any> | null>(() => {
 				});
 			}
 		});
-		console.log('emptyColumns', emptyColumns);
+		// console.log('emptyColumns', emptyColumns);
 		return emptyColumns;
 	} else {
 		return null;
@@ -201,71 +201,6 @@ const emptyColumns = computed<Record<string|number,any> | null>(() => {
 });
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo, system);
-
-// const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
-
-// const showingCount = computed(() =>
-// 	formatItemsCountPaginated({
-// 		currentItems: totalItemCount.value,
-// 		currentPage: page.value,
-// 		perPage: limit.value,
-// 		isFiltered: !!(search.value || searchFilter.value),
-// 		i18n: { t, n },
-// 	}),
-// );
-
-// const headers = ref<Array<any>>([]);
-
-// watch(
-// 	[props, relationInfo, displayItems],
-// 	() => {
-// 		if (!relationInfo.value) {
-// 			headers.value = [];
-// 			return;
-// 		}
-
-// 		const relatedCollection = relationInfo.value.relatedCollection.collection;
-
-// 		const contentWidth: Record<string, number> = {};
-
-// 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
-// 			props.fields.forEach((key) => {
-// 				if (!contentWidth[key]) {
-// 					contentWidth[key] = 5;
-// 				}
-
-// 				if (String(item[key]).length > contentWidth[key]) {
-// 					contentWidth[key] = String(item[key]).length;
-// 				}
-// 			});
-// 		});
-
-// 		headers.value = props.fields
-// 			.map((key) => {
-// 				const field = fieldsStore.getField(relatedCollection, key);
-
-// 				// when user has no permission to this field or junction collection
-// 				if (!field) return null;
-
-// 				return {
-// 					text: field.name,
-// 					value: key,
-// 					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
-// 					sortable: !['json'].includes(field.type),
-// 				};
-// 			})
-// 			.filter((key) => key !== null);
-// 	},
-// 	{ immediate: true },
-// );
-
-// const spacings = {
-// 	compact: 32,
-// 	cozy: 48,
-// 	comfortable: 64,
-// };
-
-// const tableRowHeight = 48;
 
 const allowDrag = computed(
 	() => relationInfo.value?.sortField !== undefined && !props.disabled,
@@ -279,23 +214,9 @@ async function sortItems(items: DisplayItem[]) {
 	items.forEach(async (item, index) => {
 		const relatedId = item?.[info.relatedPrimaryKeyField.field];
 
-		// const changes: Record<string, any> = {
-		// 	$index: item.$index,
-		// 	$type: item.$type,
-		// 	$edits: item.$edits,
-		// 	...getItemEdits(item),
-		// 	[sortField]: index + 1,
-		// };
-
 		await api.patch(`/items/${info.relatedCollection.collection}/${relatedId}`, {
 			[sortField]: index + 1,
 		});
-
-		// if (!isNil(relatedId)) {
-		// 	changes[info.relatedPrimaryKeyField.field] = relatedId;
-		// }
-
-		// return changes;
 	});
 
 	await refresh();
@@ -342,34 +263,36 @@ function editItem(item: DisplayItem) {
 // 	editItem(item);
 // }
 
-function stageEdits(item: Record<string, any>) {
+async function stageEdits(item: Record<string, any>) {
 	console.log('Save Changes', {
 		[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey,
 		...item,
 	});
 	if (newItem) {
-		api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
+		await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
 			[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey,
 			...item,
 		});
+		await refresh();
 	} else {
-		api.patch(`/items/${relationInfo.value?.relatedCollection.collection}/${item[relationInfo.value!.relatedPrimaryKeyField.field]}`, item);
+		var tableId = relationInfo.value!.relatedPrimaryKeyField.field ?? 'id';
+		api.patch(`/items/${relationInfo.value?.relatedCollection.collection}/${item[tableId]}`, item);
+        var index = displayItems.value.findIndex(i => i[tableId] == item[tableId]);
+        var keys = Object.keys(item);
+        keys.forEach(field => {
+            displayItems.value[index]![field] = item[field];
+        });
 	}
-	refresh();
-	// if (newItem) {
-	// 	create(item);
-	// } else {
-	// 	update(item);
-	// }
+	
 }
 
 function selectTable(items: (string | number)[] | null){
 	if(!relationInfo.value) return;
-	items!.forEach((item) => {
-		api.patch(`/items/${relationInfo.value?.relatedCollection.collection}/${item}`, {
+	items!.forEach(async (item) => {
+		await api.patch(`/items/${relationInfo.value?.relatedCollection.collection}/${item}`, {
 			[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey
 		});
-		refresh();
+		await refresh();
 	});
 }
 
@@ -378,55 +301,8 @@ function cancelEdit() {
 }
 
 function deleteItem(item: DisplayItem) {
-	// if (
-	// 	page.value === Math.ceil(totalItemCount.value / limit.value) &&
-	// 	page.value !== Math.ceil((totalItemCount.value - 1) / limit.value)
-	// ) {
-	// 	page.value = Math.max(1, page.value - 1);
-	// }
-
 	remove(item);
 }
-
-// const batchEditActive = ref(false);
-// const selection = ref<DisplayItem[]>([]);
-
-// const selectedKeys = computed(() => {
-// 	if (!relationInfo.value) return [];
-
-// 	return selection.value
-// 		.map(
-// 			// use `$index` for newly created items that don’t have a PK yet
-// 			(item) => item[relationInfo.value!.relatedPrimaryKeyField.field] ?? item.$index ?? null,
-// 		)
-// 		.filter((key) => !isNil(key));
-// });
-
-// function stageBatchEdits(edits: Record<string, any>) {
-// 	if (!relationInfo.value) return;
-
-// 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
-
-// 	for (const item of selection.value) {
-// 		const relatedId = get(item, [relatedPkField], null);
-
-// 		const changes: Record<string, any> = {
-// 			$index: item.$index,
-// 			$type: item.$type,
-// 			$edits: item.$edits,
-// 			...getItemEdits(item),
-// 			...edits,
-// 		};
-
-// 		if (relatedId !== null) {
-// 			changes[relatedPkField] = relatedId;
-// 		}
-
-// 		update(changes);
-// 	}
-
-// 	selection.value = [];
-// }
 
 const values = inject('values', ref<Record<string, any>>({}));
 

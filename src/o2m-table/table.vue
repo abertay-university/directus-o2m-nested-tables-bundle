@@ -84,9 +84,10 @@ async function sortTableItems(items: Record<string,any>[]) {
 		await api.patch(`/items/${tableCollection.value}/${item[tablePrimaryKeyField.value!.field]}`, {
 			[tableSortField.value!]: index + 1,
 		});
+        tableItems.value[index] = item;
 	});
 
-	await props.refresh();
+	// await props.refresh();
 }
 
 function createTableItem({ id, aggregationValue }: { id: PrimaryKey, aggregationValue?: string | number }) {
@@ -118,22 +119,33 @@ function renderHeader(field: string, collection?: string | null){
 	}
 }
 
-function stageTableEdits(item: Record<string, any>) {
+async function stageTableEdits(item: Record<string, any>) {
 	if (newItem) {
-		api.post(`/items/${tableCollection.value}`, {
+		await api.post(`/items/${tableCollection.value}`, {
 			[tableReverseField.value]: newItem,
 			...item,
 		});
+        await props.refresh();
+        
 	} else {
-		api.patch(`/items/${tableCollection.value}/${item[tablePrimaryKeyField.value!.field]}`, item);
+        var tableId = tablePrimaryKeyField.value!.field ?? 'id';
+		api.patch(`/items/${tableCollection.value}/${item[tableId]}`, item);
+        var index = tableItems.value.findIndex(i => i[tableId] == item[tableId]);
+        var keys = Object.keys(item);
+        keys.forEach(field => {
+            tableItems.value[index]![field] = item[field];
+        });
 	}
-	props.refresh();
+	// props.refresh();
 }
 
 function deleteTableItem(item: Record<string,any>){
 	deleting.value = true;
-	api.delete(`/items/${tableCollection.value}/${item[tablePrimaryKeyField.value!.field]}`);
-	props.refresh();
+    var tableId = tablePrimaryKeyField.value!.field ?? 'id';
+	api.delete(`/items/${tableCollection.value}/${item[tableId]}`);
+    var index = tableItems.value.findIndex(i => i[tableId] == item[tableId]);
+    tableItems.value.splice(index, 1);
+	// props.refresh();
 	confirmDelete.value = null;
 	deleting.value = false;
 }
@@ -166,12 +178,14 @@ function cancelEdit() {
                 <template #item="{ element: item }">
                     <tr	@click.stop="element && element.$type === 'deleted' ? false : editTableItem(item)">
                         <td v-for="column, index in tableFields.filter((f) => emptyColumns && ((aggregation && ((currentTab && emptyColumns[currentTab]?.[f] > 0) || (tabs && tabs[0] && emptyColumns[tabs[0]]?.[f] > 0))) || emptyColumns?.[f] > 0))">
-                            <v-icon v-if="allowDrag && index === 0" name="drag_handle" class="table-drag-handle" left @click.stop="() => {}" />
-                            <render-template
-                                :collection="tableCollection"
-                                :item="item"
-                                :template="`{{${column}}}`"
-                            />
+                            <div class="flex-cell">
+                                <v-icon v-if="allowDrag && index === 0" name="drag_handle" class="table-drag-handle" left @click.stop="() => {}" />
+                                <render-template
+                                    :collection="tableCollection"
+                                    :item="item"
+                                    :template="`{{${column}}}`"
+                                />
+                            </div>
                         </td>
                         <td class="remove-table-item">
                             <v-remove
@@ -252,7 +266,7 @@ function cancelEdit() {
 	background-color: var(--theme--background-subdued);
 	cursor: pointer;
 }
-.o2m-table tr td:first-child {
+.o2m-table tr td .flex-cell {
     display: flex;
     align-items: center;
 }
