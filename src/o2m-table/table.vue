@@ -199,7 +199,7 @@ function cancelEdit() {
         </table>
     </div>
     <v-button
-        v-if="!tableDisabled && enableCreate && createAllowed"
+        v-if="!tableDisabled && enableCreate && createAllowed && props.primaryKey != '+'"
         class="o2m-table-create"
         v-tooltip.bottom="t('create_item')"
         x-small

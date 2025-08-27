@@ -438,7 +438,7 @@ console.log('tableSortField', tableSortField.value);
 
 							<div class="spacer" />
 
-							<div class="item-actions">
+							<div class="item-actions" v-if="props.primaryKey != '+'">
 								<router-link
 									v-if="enableLink && element.$type !== 'created'"
 									v-tooltip="t('navigate_to_item')"
