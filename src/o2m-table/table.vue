@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Field, LogicalFilterAND, PrimaryKey, Relation } from '@directus/types';
 import { useApi, useStores } from '@directus/extensions-sdk';
+// @ts-expect-error format-title dependancy
 import { formatTitle } from '@directus/format-title';
 import { DisplayItem } from '../composables/use-relation-multiple';
 import { RelationO2M } from '../composables/use-relation-o2m';

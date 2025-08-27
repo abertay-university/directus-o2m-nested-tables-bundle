@@ -5,6 +5,7 @@ import { useApi, useCollection, useExtensions, useStores } from '@directus/exten
 import { addRelatedPrimaryKeyToFields } from '../utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '../utils/adjusts-fields-for-displays';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+// @ts-expect-error format-title dependancy
 import { formatTitle } from '@directus/format-title';
 import { render } from 'micromustache';
 import { getItemRoute } from '../utils/get-route';
