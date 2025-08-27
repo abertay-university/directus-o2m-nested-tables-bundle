@@ -159,7 +159,7 @@ const tabs = computed<string[]>(() => {
 	return tabs.sort();
 });
 
-const emptyColumns = computed<Record<string|number,any> | null>(() => {
+function emptyColumns(items: Record<string, any>[]){
 	if(loading.value) return null;
 	let emptyColumns: Record<string|number, any> = {};
 	tableFields.value.forEach((f) => {
@@ -175,31 +175,27 @@ const emptyColumns = computed<Record<string|number,any> | null>(() => {
 		}
 	});
 
-	if(displayItems.value.length > 0 && displayItems.value[0]){
-		displayItems.value.forEach((i) => {
-			if(tableField.value && tableField.value in i){
-				i[tableField.value].forEach((t: Record<string, any>) => {
-					tableFields.value.forEach((key: string) => {
-						let value = get(t, key);
-						if(aggregation.value){
-							if(!!value){
-								emptyColumns[t[aggregation.value]][key] += 1;
-							}
-						} else {
-							if(!!value){
-								emptyColumns[key] += 1;
-							}
-						}
-					});
-				});
-			}
+	if(items.length > 0){
+		items.forEach((t) => {
+			tableFields.value.forEach((key: string) => {
+				let value = get(t, key);
+				if(aggregation.value){
+					if(!!value){
+						emptyColumns[t[aggregation.value]][key] += 1;
+					}
+				} else {
+					if(!!value){
+						emptyColumns[key] += 1;
+					}
+				}
+			});
 		});
 		// console.log('emptyColumns', emptyColumns);
 		return emptyColumns;
 	} else {
 		return null;
 	}
-});
+}
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo, system);
 
@@ -487,7 +483,7 @@ function getLinkForItem(item: DisplayItem) {
 								:table-sort-field="tableSortField"
 								:aggregation
 								:table-fields="tableFields"
-								:empty-columns="emptyColumns"
+								:empty-columns="emptyColumns(element[tableField!])"
 								:relation-info="relationInfo"
 								:table-relation="tableRelation"
 								:disabled
