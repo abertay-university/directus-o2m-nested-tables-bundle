@@ -461,7 +461,7 @@ function getLinkForItem(item: DisplayItem) {
 								<div v-if="element[description].includes('</')" v-html="element[description]"></div>
 								<p v-else>{{ element[description] }}</p>
 							</div>
-							<div v-if="aggregation" class="o2m-tabs">
+							<div v-if="aggregation && tabs.length > 1" class="o2m-tabs">
 								<label>{{ formatTitle(aggregation) }}:</label>
 								<button v-for="option in tabs" @click.stop="currentTab = option" :class="{
 									active: option === currentTab || (!currentTab && option === tabs[0])
