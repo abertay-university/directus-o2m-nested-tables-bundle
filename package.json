@@ -1,7 +1,7 @@
 {
 	"name": "directus-bundle-o2m-table",
 	"type": "module",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Visualise content from a o2m relation as a table with the ability to create, edit, delete and rearrange data",
 	"author": {
 		"name": "Tim Butterfield",
