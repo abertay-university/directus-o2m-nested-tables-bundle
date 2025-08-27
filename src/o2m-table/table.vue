@@ -160,14 +160,14 @@ function cancelEdit() {
     <v-notice v-if="props.primaryKey == '+'">
         Save changes before creating new records.
     </v-notice>
-    <v-notice v-else-if="tableItems.length === 0">
+    <v-notice v-else-if="tableItems.length === 0 && (!enableCreate || !createAllowed)">
         {{ t('no_items') }}
     </v-notice>
     <div class="o2m-table" :class="{
         disabled: tableDisabled,
-    }">
+    }" v-if="tableItems.length > 0">
         <table>
-            <thead v-if="tableItems.length > 0">
+            <thead>
                 <tr>
                     <th v-for="header in tableFields.filter((h) => emptyColumns && ((aggregation && ((currentTab && emptyColumns[currentTab]?.[h] > 0) || (tabs && tabs[0] && emptyColumns[tabs[0]]?.[h] > 0))) || emptyColumns?.[h] > 0))">{{ renderHeader(header, tableCollection) }}</th>
                     <th class="remove-table-item">&nbsp;</th>
@@ -213,7 +213,7 @@ function cancelEdit() {
         full-width
         @click.stop="createTableItem({ id: primaryKey, aggregationValue: currentTab ?? tabs?.[0] })"
     >
-        {{ t('create_item') }}
+        {{ tableItems.length === 0 ? 'Create First Item' : t('create_item') }}
     </v-button>
 
     <drawer-item
