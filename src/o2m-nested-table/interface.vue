@@ -260,15 +260,11 @@ function editItem(item: DisplayItem) {
 	}
 }
 
-// function editRow({ item }: { item: DisplayItem }) {
-// 	editItem(item);
-// }
-
 async function stageEdits(item: Record<string, any>) {
-	console.log('Save Changes', {
-		[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey,
-		...item,
-	});
+	// console.log('Save Changes', {
+	// 	[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey,
+	// 	...item,
+	// });
 	if (newItem) {
 		await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
 			[relationInfo.value?.reverseJunctionField.field!]: props.primaryKey,
@@ -365,11 +361,11 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-console.log('tableRelation',tableRelation);
-console.log('relationInfo', relationInfo.value);
-console.log('tableInfo', tableInfo.value);
-console.log('tablePrimaryKeyField', tablePrimaryKeyField.value);
-console.log('tableSortField', tableSortField.value);
+// console.log('tableRelation',tableRelation);
+// console.log('relationInfo', relationInfo.value);
+// console.log('tableInfo', tableInfo.value);
+// console.log('tablePrimaryKeyField', tablePrimaryKeyField.value);
+// console.log('tableSortField', tableSortField.value);
 
 </script>
 <template>

@@ -76,8 +76,8 @@ const deleting = ref<boolean>(false);
 let newItem: boolean | PrimaryKey = false;
 
 async function sortTableItems(items: Record<string,any>[]) {
-	console.log('tableSortField', tableSortField.value);
-	console.log('sortTableItems', items);
+	// console.log('tableSortField', tableSortField.value);
+	// console.log('sortTableItems', items);
 	if (!tableSortField.value) return;
 
 	items.forEach(async (item, index) => {
@@ -100,7 +100,7 @@ function createTableItem({ id, aggregationValue }: { id: PrimaryKey, aggregation
 }
 
 function editTableItem(item: DisplayItem) {
-	console.log('editTableItem', item);
+	// console.log('editTableItem', item);
 	if (!relationInfo.value) return;
 
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;

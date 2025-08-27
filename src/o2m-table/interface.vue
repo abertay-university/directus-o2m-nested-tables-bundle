@@ -124,7 +124,7 @@ const emptyColumns = computed<Record<string|number,any> | null>(() => {
 				}
 			});
 		});
-		console.log('emptyColumns', emptyColumns);
+		// console.log('emptyColumns', emptyColumns);
 		return emptyColumns;
 	} else {
 		return null;
@@ -192,7 +192,7 @@ const customFilter = computed(() => {
 });
 
 
-console.log('relationInfo', relationInfo.value);
+// console.log('relationInfo', relationInfo.value);
 
 </script>
 <template>
