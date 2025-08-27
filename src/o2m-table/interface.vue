@@ -191,7 +191,6 @@ const customFilter = computed(() => {
 	return filter;
 });
 
-
 // console.log('relationInfo', relationInfo.value);
 
 </script>
@@ -204,9 +203,6 @@ const customFilter = computed(() => {
 	</v-notice>
 	<div v-else class="one-to-many">
 		<v-progress-circular v-if="!displayItems || loading" indeterminate />
-		<v-notice v-else-if="displayItems.length === 0">
-			{{ t('no_items') }}
-		</v-notice>
 		<O2MTable
 			v-else
 			:primary-key="primaryKey"

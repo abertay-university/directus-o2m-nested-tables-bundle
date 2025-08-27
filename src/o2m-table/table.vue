@@ -157,6 +157,12 @@ function cancelEdit() {
 
 </script>
 <template>
+    <v-notice v-if="props.primaryKey == '+'">
+        Save changes before creating new records.
+    </v-notice>
+    <v-notice v-else-if="tableItems.length === 0">
+        {{ t('no_items') }}
+    </v-notice>
     <div class="o2m-table" :class="{
         disabled: tableDisabled,
     }">
@@ -203,7 +209,7 @@ function cancelEdit() {
         v-if="!tableDisabled && enableCreate && createAllowed && props.primaryKey != '+'"
         class="o2m-table-create"
         v-tooltip.bottom="t('create_item')"
-        x-small
+        :x-small="!(tableItems.length === 0)"
         full-width
         @click.stop="createTableItem({ id: primaryKey, aggregationValue: currentTab ?? tabs?.[0] })"
     >
