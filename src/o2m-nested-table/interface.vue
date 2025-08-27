@@ -133,7 +133,7 @@ const {
 	remove,
 	// select,
 	displayItems,
-	totalItemCount,
+	// totalItemCount,
 	loading,
 	selected,
 	isItemSelected,
@@ -461,7 +461,7 @@ console.log('tableSortField', tableSortField.value);
 						</div>
 						<div class="o2m-list-content">
 							<div class="o2m-list-description" v-if="description && element[description]">
-								<template v-if="element[description].includes('<p>')" v-html="element[description]"></template>
+								<div v-if="element[description].includes('</')" v-html="element[description]"></div>
 								<p v-else>{{ element[description] }}</p>
 							</div>
 							<div v-if="aggregation" class="o2m-tabs">
